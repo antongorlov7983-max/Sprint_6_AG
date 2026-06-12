@@ -27,3 +27,44 @@
     объявленна url главной страницы сайта "Самокат"
 
     объявлен список ответов на вопросы о важном в соответствующей последовательности
+
+В доработанной версии после первого ревью, пришлось перестроить проект для более удобного его обслуживания.
+Перечень изменений:
+
+- page_object:
+    - Создан базовый класс `BasePage` с общими методами:
+        - `wait_visible` — ожидание видимости элемента
+        - `click_with_js` — клик через JavaScript
+        - `get_all_elements` — получение списка элементов
+        - и другие вспомогательные методы
+    - Класс `MainPage` унаследован от `BasePage`, добавлен метод `choice_order_button` для параметризации теста заказа
+    - Класс страницы заказа разделён на три (`OrderPageFormUser`, `OrderPageFormScooter`, `OrderPageConfirmation`), каждый унаследован от `BasePage`
+
+- tests:
+    - Тесты `test_upper_button_order` и `test_lower_button_order` объединены в один параметризованный `test_scooter_order`
+    - Тесты `test_switching_click_logo` переписаны: вызовы методов Selenium заменены на вызовы методов `MainPage`
+    - Тесты `test_important_questions` параметризованы через словарь `question` в `test_data.py`
+
+- conftest.py:
+    - Добавлены фикстуры `driver`, `main_page`, `form_user`, `form_scooter`, `order_confirmation`
+
+- Allure:
+    - Добавлены декораторы `@allure.title`, `@allure.step` и динамические `allure.dynamic.title` / `allure.dynamic.description` 
+
+Итоговая структура проекта
+
+Sprint_6_AG/
+├── page_object/
+│   ├── page_object_base.py
+│   ├── page_object_main.py
+│   └── page_object_form_order.py
+├── tests/
+│   ├── test_important_questions.py
+│   ├── test_scooter_order.py
+│   └── test_switching_click_logo.py
+├── conftest.py
+├── test_data.py
+├── requirements.txt
+└── README.md
+
+    

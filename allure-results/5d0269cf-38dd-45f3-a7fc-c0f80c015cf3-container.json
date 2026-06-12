@@ -1,0 +1,1 @@
+{"uuid": "bb87e624-e29a-4683-be44-7b4becc1d947", "children": ["eb00a3dd-d2d5-49ab-8ba8-ba21aafeb26e"], "befores": [{"name": "main_page", "status": "passed", "steps": [{"name": "Закрытие банера куки", "status": "passed", "start": 1781297547229, "stop": 1781297547332}], "start": 1781297547229, "stop": 1781297547332}], "start": 1781297547229, "stop": 1781297547883}

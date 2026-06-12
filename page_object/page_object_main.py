@@ -1,59 +1,64 @@
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+import allure
+from page_object.page_object_base import BasePage
 from selenium.webdriver.common.by import By
 
 
-class MainPage:
+class MainPage(BasePage):
 
     upper_order_button = (By.XPATH, '//div[contains(@class,"Nav")]/button[contains(@class,"Button")]') # Кнопка "Заказать" в заголовке страницы
     lower_order_button = (By.XPATH, '//button[contains(@class,"Button_Button") and contains(text(),"Заказать")]') # Кнопка "Заказать" внизу страницы
     logo_scooter = (By.XPATH, '//a[contains(@class,"LogoScooter")]') # Логотип самокат
     logo_yandex = (By.CSS_SELECTOR,'[class*="Header_LogoYandex"]') # Логотип яндекса
-    button_cookies = (By.ID,'rcc-confirm-button') # Кнопка закрытия банеры куки
+    button_cookies = (By.ID,'rcc-confirm-button') # Кнопка закрытия банера куки
 
-    def __init__(self,driver):
-        self.driver = driver 
+    @allure.step('Закрытие банера куки')
+    def close_button_cookies(self):
+        self.close_if_exists(self.button_cookies)
 
-    def click_order_button_cookies(self):
-        try:
-            self.driver.find_element(*self.button_cookies).click()
-        except:
-            pass
-
-    # Кликаем на верхнюю кнопку
+    @allure.step('Кликаем на верхнюю кнопку "Заказать"')
     def click_upper_order_button(self):
-        self.driver.find_element(*self.upper_order_button).click()
+        self.wait_visible(self.upper_order_button).click()
 
-    # Кликаем на нижнюю кнопку
+    @allure.step('Кликаем на нижнюю кнопку "Заказать"')
     def click_lower_order_button(self):
-        self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-        element = self.driver.find_element(*self.lower_order_button)
-        self.driver.execute_script("arguments[0].click();", element)
+        self.click_with_js(self.lower_order_button)
+        
+    # Выбор кнопки "Заказать"
+    def choice_order_button(self, button):
+        if button == 'нижнюю':
+            self.click_lower_order_button()
+        elif button == 'верхнюю':
+            self.click_upper_order_button()
+        else:
+            raise Exception(f"Такой кнопки нет")
+    
+    @allure.step('кликаем на вопрос')
+    def click_question_locator(self, index):
+        self.click_with_js(self.get_question_locator(index))
+    
+    @allure.step('Клик по логотипу "Самокат"')
+    def click_logo_scooter(self):
+        self.wait_visible(self.logo_scooter).click()
 
+    @allure.step('Кликаем по логотипу яндекс')
+    def click_logo_yandex(self):
+        self.wait_visible(self.logo_yandex).click()
+
+    # получаем текст ответа из страницы
+    def text_answer(self, index):
+        return self.wait_visible(self.get_answer_locator(index)).text
+    
     # получаем локатор на вопрос
     def get_question_locator(self, index):
         return (By.ID, f'accordion__heading-{index}')
-    
-    # кликаем на вопрос
-    def click_question_locator(self, index):
-        element = self.driver.find_element(*self.get_question_locator(index))
-        self.driver.execute_script("arguments[0].scrollIntoView();", element)
-        self.driver.execute_script("arguments[0].click();", element)
 
     # получаем локатор на ответ
     def get_answer_locator(self, index):
         return (By.ID, f'accordion__panel-{index}')
     
-    # получаем текст ответа из страницы
-    def text_answer(self, index):
-        answer = self.driver.find_element(*self.get_answer_locator(index))
-        WebDriverWait(self.driver, 5).until(EC.visibility_of(answer))
-        return answer.text
-
-    # Клик по логотипу "Самокат"
-    def click_logo_scooter(self):
-        self.driver.find_element(*self.logo_scooter).click()
-
-    # Кликаем по логотипу яндекс
-    def click_logo_yandex(self):
-        self.driver.find_element(*self.logo_yandex).click()
+    # Переходим в новом окно
+    def open_page_dzen(self, expected_url):
+        main_handle = self.driver.current_window_handle
+        self.click_logo_yandex()
+        self.switch_to_new_window(main_handle)
+        self.wait_url_contains(expected_url)
