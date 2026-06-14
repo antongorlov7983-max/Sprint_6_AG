@@ -23,7 +23,7 @@ class MainPage(BasePage):
     def click_lower_order_button(self):
         self.click_with_js(self.lower_order_button)
         
-    # Выбор кнопки "Заказать"
+    @allure.step('Выбор кнопки "Заказать"')
     def choice_order_button(self, button):
         if button == 'нижнюю':
             self.click_lower_order_button()
@@ -44,19 +44,19 @@ class MainPage(BasePage):
     def click_logo_yandex(self):
         self.wait_visible(self.logo_yandex).click()
 
-    # получаем текст ответа из страницы
+    @allure.step("получаем текст ответа из страницы")
     def text_answer(self, index):
         return self.wait_visible(self.get_answer_locator(index)).text
     
-    # получаем локатор на вопрос
+    @allure.step("получаем локатор на вопрос")
     def get_question_locator(self, index):
         return (By.ID, f'accordion__heading-{index}')
 
-    # получаем локатор на ответ
+    @allure.step("получаем локатор на ответ")
     def get_answer_locator(self, index):
         return (By.ID, f'accordion__panel-{index}')
     
-    # Переходим в новом окно
+    @allure.step("Переходим в новом окно")
     def open_page_dzen(self, expected_url):
         main_handle = self.driver.current_window_handle
         self.click_logo_yandex()

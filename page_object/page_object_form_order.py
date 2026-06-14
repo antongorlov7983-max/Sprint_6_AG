@@ -28,11 +28,11 @@ class OrderPageFormUser(BasePage):
     def click_input_metro_station(self):
         self.wait_visible(self.input_metro_station).click()
 
-    # Создать локатор станции из списка
+    @allure.step("Создать локатор станции из списка")
     def get_station_locator(self, index_station):
         return (By.XPATH, f'//li[@data-index = {index_station}]')
         
-    # Получение названия станции
+    @allure.step("Получение названия станции")
     def get_name_station(self, index_station):
         return (By.XPATH, f'//li[@data-index = {index_station}]/button/div[contains(@class,"Order_Text")]')
     
@@ -50,7 +50,7 @@ class OrderPageFormUser(BasePage):
     def click_button_next(self):
         self.wait_visible(self.button_next).click()
 
-    # Заполняем форму "Для кого самокат"
+    @allure.step("Заполняем форму 'Для кого самокат'")
     def filling_form_user(self, name, surname, address, index_station, number):
         self.set_input_name(name)
         self.set_input_surname(surname)
@@ -82,7 +82,7 @@ class OrderPageFormScooter(BasePage):
     def set_rental_day(self, days):
         self.get_all_elements(self.choice_rental_day)[int(days)-1].click()
 
-    # Создание локатора чекбокса цвета скутера
+    @allure.step("Создание локатора чекбокса цвета скутера")
     def choice_color_scooter(self, color):
         return (self.type_locator_checkboxes_color_scooter, f'{color}')
         
@@ -99,7 +99,7 @@ class OrderPageFormScooter(BasePage):
     def click_button_order(self):
         self.wait_visible(self.button_order).click()
 
-    # Заполнение формы "Про заказ"
+    @allure.step("Заполнение формы 'Про заказ'")
     def filling_form_about_rent(self, date, days, color, commit):
         self.set_input_date(date)
         self.click_input_rental_period()
@@ -118,6 +118,6 @@ class OrderPageConfirmation(BasePage):
     def click_button_yes(self):
         self.wait_visible(self.button_yes).click()
 
-    # Получение текста подтверждения заказа
+    @allure.step("Получение текста подтверждения заказа")
     def get_text_title_order_placed(self):
         return self.wait_visible(self.title_order_placed).text
